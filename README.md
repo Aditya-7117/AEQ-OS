@@ -8,7 +8,7 @@ A model-agnostic instruction layer that makes coding agents behave like institut
 
 [![Validate](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml/badge.svg)](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Rule IDs](https://img.shields.io/badge/rule--IDs-262-blue)](docs/ARCHITECTURE.md#rule-index)
+[![Rule IDs](https://img.shields.io/badge/rule--IDs-339-blue)](docs/ARCHITECTURE.md#rule-index)
 [![Model agnostic](https://img.shields.io/badge/models-Claude%20%7C%20Antigravity%20%7C%20Cursor%20%7C%20any-informational)](#installation)
 
 </div>
@@ -23,7 +23,7 @@ AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, writte
 
 ## Features
 
-- **262 rules across 13 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
+- **339 rules across 17 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
 - **Automatic routing.** `ROUTER_MAP.json` classifies a project by keyword/dependency/path signals and loads only the relevant domain files — with a hard override that force-loads the live-trading gate the instant real capital is reachable, no matter what else matched.
 - **A real quality gate, not a suggestion.** `CORE/verification_protocol.md` defines G0–G4: enumerated acceptance criteria → zero-warning static pass → failure-path/property tests → captured runtime evidence → a self-audit with a mutation spot-check. "Done" requires an evidence table, not a claim.
 - **A named registry of LLM failure modes** (`CORE/model_adaptation.md`) — placeholder elision, premature completion, hallucinated APIs, scope shrink, confidence inflation, sycophantic agreement, test-gaming — each bound to a specific, mechanical countermeasure, plus a banned-lexicon list a script actually checks.
@@ -106,6 +106,10 @@ AEQ-OS/
 │   ├── quant_trading_engine.md      QT-* — concurrency, WebSocket state, trailing-stop math
 │   ├── live_trading_gate.md         LIVE-1..22 — zero-tolerance live deployment checklist
 │   ├── exhaustive_research.md       RESEARCH-1..20 — hypothesis-space breadth, overfitting guards
+│   ├── portfolio_risk.md            PORT-1..20 — position sizing, VaR/drawdown caps, tail risk
+│   ├── market_data_quality.md       DATA-1..20 — point-in-time correctness, survivorship bias, lineage
+│   ├── trading_compliance.md        COMP-1..18 — audit trail, manipulation-pattern self-checks
+│   ├── model_lifecycle.md           MDL-1..18 — model versioning, decay, champion/challenger
 │   ├── ai_agent_orchestration.md    AGT-1..20 — budget caps, loop guards, RL state
 │   ├── distributed_rag.md           RAG-1..17 — chunk lineage, multi-store sync, drift
 │   ├── financial_audit_ledger.md    LGR-1..16 — dual-entry, hash-chained, CA-grade ledger
@@ -128,10 +132,12 @@ AEQ-OS/
 
 **Backtesting research:** the agent loads `exhaustive_research.md` alongside the quant domains — a literal "test this parameter" request becomes a scoped sweep of the neighborhood (`RESEARCH-1`), reported with cost/regime sensitivity bands and a negative-result table (`RESEARCH-4`, `RESEARCH-11`) instead of a single cherry-picked number, and a backtest can't be represented as live-ready until it clears the multiple-comparisons and baseline-comparison bar (`RESEARCH-17`).
 
+**Institutional quant desk:** `quant_live_execution` pulls in the full stack — `portfolio_risk.md` caps exposure and tail risk across the whole book, not just per-strategy (`PORT-3`, `PORT-15`); `market_data_quality.md` guards against survivorship bias and look-ahead leaks in the data itself (`DATA-1`, `DATA-3`); `trading_compliance.md` is force-loaded the instant real funds are reachable and self-checks for manipulative order patterns, intentional or not (`COMP-2`); `model_lifecycle.md` governs how a strategy version gets promoted, monitored for decay, and safely rolled back (`MDL-9`, `MDL-4`, `MDL-8`).
+
 ## Roadmap
 
-- [ ] Dedicated `DOMAINS/data_engineering.md` — schema evolution and pipeline invariants beyond what `fullstack_architecture.md` covers for OLTP.
-- [ ] Dedicated `DOMAINS/portfolio_risk.md` — position sizing, portfolio-level VaR/drawdown caps, correlation and factor-exposure limits, distinct from the single-strategy execution rules in `quant_trading_engine.md`.
+- [ ] Dedicated `DOMAINS/data_engineering.md` — schema evolution and pipeline invariants beyond what `fullstack_architecture.md` covers for OLTP (distinct from `market_data_quality.md`, which is about market data specifically).
+- [ ] Dedicated `DOMAINS/credential_lifecycle.md` — key rotation automation, vault integration, per-environment isolation at team scale, deeper than `CONST-26`/`LIVE-1..3`'s solo-builder baseline.
 - [ ] Reference implementations: a minimal trailing-stop engine and a minimal RAG ingestion pipeline that visibly follow the rule IDs, for onboarding.
 - [ ] A `--check` mode for `validate.py` that also lints cross-file rule citations (does `QT-STOP-3` actually exist where it's cited?).
 

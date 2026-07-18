@@ -2,6 +2,18 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.4.0] — 2026-07-18
+
+### Added
+- `DOMAINS/portfolio_risk.md` (`PORT-1..20`) — risk across a book of strategies, not just one: portfolio-level exposure/VaR/drawdown caps, correlation and concentration limits, tail-risk scenarios beyond VaR, leverage and liquidity bounds, staged capital allocation for new strategies.
+- `DOMAINS/market_data_quality.md` (`DATA-1..20`) — point-in-time correctness, survivorship-bias-free universes, corporate-action adjustment, bad-tick/outlier filtering, multi-vendor reconciliation, data lineage.
+- `DOMAINS/trading_compliance.md` (`COMP-1..18`) — regulator-grade audit trail, automated manipulation-pattern self-checks (layering/spoofing/wash-trading), regulatory position thresholds, information barriers. Defensive by design — detects and refuses the pattern class, never specifies it.
+- `DOMAINS/model_lifecycle.md` (`MDL-1..18`) — trading model/strategy versioning distinct from `ai_agent_orchestration.md` (LLM agents): shadow deployment, champion/challenger promotion criteria, decay monitoring, training/serving skew checks, formal retirement.
+- All four wired into `ROUTER_MAP.json`: `portfolio_risk.md`/`market_data_quality.md`/`model_lifecycle.md` load for `quant_research_backtest`; all four (plus `trading_compliance.md` via the `hard_rule`) load for `quant_live_execution`; `model_lifecycle.md` also loads for `rl_training`.
+- `RESEARCH-21` — standard institutional metric suite (Sharpe, Sortino, Calmar, profit factor, CAGR, max drawdown, win rate) required in every strategy evaluation, reported together rather than optimized in isolation, to prevent single-metric overfitting.
+- Fixed a cross-platform `install.ps1` bug found by actually executing it under PowerShell 7: `Get-Item` without `-Force` silently treats dot-prefixed paths (`.ai_os`) as hidden on every OS PowerShell runs on, so the existing-install detection never fired. Also replaced `Remove-Item -Force` with `.Delete()` on the reparse point directly, since `Remove-Item`'s cross-platform behavior on a directory-symlink is inconsistent and can require `-Recurse` — which would be dangerous here.
+- Total: 339 rules across 17 files, verified by `scripts/validate.py`.
+
 ## [1.3.0] — 2026-07-18
 
 ### Added

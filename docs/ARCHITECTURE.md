@@ -95,6 +95,10 @@ flowchart BT
 | `DOMAINS/quant_trading_engine.md` | `QT-ARCH/CONC/WS/ORD/STOP/PNL/TIME/DET-n` | Single-writer order state, WebSocket state machine, trailing-stop math, backtest/live parity |
 | `DOMAINS/live_trading_gate.md` | `LIVE-n` | Zero-tolerance PASS/FAIL checklist before real capital is at risk; no override |
 | `DOMAINS/exhaustive_research.md` | `RESEARCH-n` | Hypothesis-space breadth, overfitting/multiple-comparisons guards, negative-result reporting for backtesting |
+| `DOMAINS/portfolio_risk.md` | `PORT-n` | Position sizing, portfolio-level VaR/drawdown caps, correlation/concentration limits, tail risk, kill-switch integration |
+| `DOMAINS/market_data_quality.md` | `DATA-n` | Point-in-time correctness, survivorship-bias-free universes, corporate actions, vendor reconciliation, data lineage |
+| `DOMAINS/trading_compliance.md` | `COMP-n` | Regulator-grade audit trail, manipulation-pattern self-checks, regulatory thresholds, information barriers |
+| `DOMAINS/model_lifecycle.md` | `MDL-n` | Model/strategy versioning, shadow deployment, champion/challenger promotion, decay monitoring, rollback |
 | `DOMAINS/ai_agent_orchestration.md` | `AGT-n` | Budget circuit breakers, loop/recursion guards, RL transition logging, multi-agent supervision |
 | `DOMAINS/distributed_rag.md` | `RAG-n` | Chunk lineage, multi-vector-store sync via outbox, embedder-version isolation, injection quarantine |
 | `DOMAINS/financial_audit_ledger.md` | `LGR-n` | Dual-entry, hash-chained, append-only ledger shared by trading fills and LLM spend metering |
@@ -122,13 +126,17 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 | `QT-DET` | 3 | `DOMAINS/quant_trading_engine.md` |
 | `LIVE` | 22 | `DOMAINS/live_trading_gate.md` |
 | `RESEARCH` | 20 | `DOMAINS/exhaustive_research.md` |
+| `PORT` | 20 | `DOMAINS/portfolio_risk.md` |
+| `DATA` | 20 | `DOMAINS/market_data_quality.md` |
+| `COMP` | 18 | `DOMAINS/trading_compliance.md` |
+| `MDL` | 18 | `DOMAINS/model_lifecycle.md` |
 | `AGT` | 20 | `DOMAINS/ai_agent_orchestration.md` |
 | `RAG` | 17 | `DOMAINS/distributed_rag.md` |
 | `LGR` | 16 | `DOMAINS/financial_audit_ledger.md` |
 | `FS` | 20 | `DOMAINS/fullstack_architecture.md` |
 | `UIUX` | 20 | `DOMAINS/ui_ux_design_system.md` |
 | `DEP` | 20 | `DOMAINS/deployment_and_audit.md` |
-| **Total** | **262** | |
+| **Total** | **339** | |
 
 Resolve any rule ID from anywhere:
 

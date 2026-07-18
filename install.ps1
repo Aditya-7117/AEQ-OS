@@ -15,16 +15,18 @@ foreach ($f in @("BOOT.md", "ROUTER_MAP.json", "CORE", "DOMAINS")) {
     }
 }
 
-$existing = Get-Item -Path $Target -ErrorAction SilentlyContinue
+$existing = Get-Item -Force -Path $Target -ErrorAction SilentlyContinue
 if ($existing) {
-    if ($existing.LinkType -eq "Junction") {
-        $currentTarget = $existing.Target
-        if ($currentTarget -eq $RepoDir) {
-            Write-Host "already installed from this checkout. Nothing to do."
-            exit 0
-        }
-        Write-Host "repointing existing junction to this checkout."
-        Remove-Item $Target -Force
+    if ($existing.Attributes -match "ReparsePoint") {
+        # A junction/symlink is just a pointer with no data of its own --
+        # always safe to remove and recreate, regardless of where it
+        # currently points. Using .Delete() directly (not Remove-Item)
+        # because .NET guarantees a non-recursive delete on a reparse point
+        # does not traverse it; Remove-Item -Force's cross-platform behavior
+        # on a directory-symlink is inconsistent and can require -Recurse,
+        # which would be dangerous here (it would delete through the link).
+        Write-Host "existing junction found at $Target -- repointing to this checkout."
+        $existing.Delete()
     } else {
         $backup = Join-Path $HOME (".ai_os.backup-" + (Get-Date -Format "yyyyMMddHHmmss"))
         Write-Host "$Target already exists as a real directory - backing it up to $backup"
@@ -32,7 +34,12 @@ if ($existing) {
     }
 }
 
-New-Item -ItemType Junction -Path $Target -Target $RepoDir | Out-Null
+try {
+    New-Item -ItemType Junction -Path $Target -Target $RepoDir -ErrorAction Stop | Out-Null
+} catch {
+    Write-Error "Could not create the junction at $Target. If this is a permissions issue, try running PowerShell as Administrator. Underlying error: $_"
+    exit 1
+}
 Write-Host "installed: $Target -> $RepoDir"
 
 Write-Host ""

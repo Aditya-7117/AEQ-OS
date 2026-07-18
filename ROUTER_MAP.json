@@ -1,6 +1,6 @@
 {
   "os": "AEQ-OS",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "installed": "2026-07-10",
   "updated": "2026-07-18",
   "boot": "BOOT.md",
@@ -19,7 +19,7 @@
     "multiple_matches": "load the union of all matched routes",
     "no_match": "route generic_software",
     "ambiguous": "ask the user, listing candidate route ids",
-    "hard_rule": "if real funds or live venue API keys are reachable from the code being written, DOMAINS/live_trading_gate.md and DOMAINS/financial_audit_ledger.md are mandatory regardless of matched route",
+    "hard_rule": "if real funds or live venue API keys are reachable from the code being written, DOMAINS/live_trading_gate.md, DOMAINS/financial_audit_ledger.md, and DOMAINS/trading_compliance.md are mandatory regardless of matched route",
     "deploy_rule": "if the task merges to a deployed branch or ships to production infrastructure, DOMAINS/deployment_and_audit.md is mandatory in addition to the matched routes"
   },
   "routes": [
@@ -34,9 +34,12 @@
       "load": [
         "DOMAINS/quant_trading_engine.md",
         "DOMAINS/financial_audit_ledger.md",
-        "DOMAINS/exhaustive_research.md"
+        "DOMAINS/exhaustive_research.md",
+        "DOMAINS/portfolio_risk.md",
+        "DOMAINS/market_data_quality.md",
+        "DOMAINS/model_lifecycle.md"
       ],
-      "notes": "QT-DET parity rules apply even offline; the ledger books simulated fills so paper and live accounting share one code path. exhaustive_research.md governs how the backtest itself is run — hypothesis-space breadth, cost/regime sensitivity, negative-result reporting — not just the code that runs it."
+      "notes": "QT-DET parity rules apply even offline; the ledger books simulated fills so paper and live accounting share one code path. exhaustive_research.md governs how the backtest itself is run — hypothesis-space breadth, cost/regime sensitivity, negative-result reporting — not just the code that runs it. market_data_quality.md governs the data those backtests are built on; portfolio_risk.md and model_lifecycle.md apply once results feed into allocation or promotion decisions."
     },
     {
       "id": "quant_live_execution",
@@ -50,10 +53,14 @@
         "DOMAINS/quant_trading_engine.md",
         "DOMAINS/live_trading_gate.md",
         "DOMAINS/financial_audit_ledger.md",
-        "DOMAINS/exhaustive_research.md"
+        "DOMAINS/exhaustive_research.md",
+        "DOMAINS/portfolio_risk.md",
+        "DOMAINS/market_data_quality.md",
+        "DOMAINS/trading_compliance.md",
+        "DOMAINS/model_lifecycle.md"
       ],
       "hard_gate": "DOMAINS/live_trading_gate.md — every LIVE-n item must PASS before any live deploy; no overrides",
-      "notes": "exhaustive_research.md's RESEARCH-17 is the gate LIVE-17's shadow-stage ramp assumes was already satisfied before shadow trading begins."
+      "notes": "exhaustive_research.md's RESEARCH-17 is the gate LIVE-17's shadow-stage ramp assumes was already satisfied before shadow trading begins. trading_compliance.md is also force-loaded via the hard_rule the instant real funds are reachable, so it's listed here for clarity even though it's redundant with that rule."
     },
     {
       "id": "ai_agents",
@@ -78,9 +85,10 @@
         "paths": ["rl/", "envs/", "training/"]
       },
       "load": [
-        "DOMAINS/ai_agent_orchestration.md"
+        "DOMAINS/ai_agent_orchestration.md",
+        "DOMAINS/model_lifecycle.md"
       ],
-      "notes": "AGT section 5 is the core payload. If the environment is a market or the policy places orders, quant_live_execution also matches — load the union."
+      "notes": "AGT section 5 is the core payload; model_lifecycle.md's versioning/decay/rollback rules apply to a trained policy exactly as they do to any other trading model. If the environment is a market or the policy places orders, quant_live_execution also matches — load the union."
     },
     {
       "id": "rag_retrieval",
