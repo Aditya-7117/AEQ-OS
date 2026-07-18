@@ -38,6 +38,7 @@ IDs are append-only: retired IDs are never reused, rules are never renumbered.
     └── DOMAINS/
         ├── quant_trading_engine.md      ← concurrency, WebSocket, stop math, parity
         ├── live_trading_gate.md         ← zero-tolerance live deployment checklist
+        ├── exhaustive_research.md       ← hypothesis-space breadth, overfitting guards
         ├── ai_agent_orchestration.md    ← budgets, loop guards, RL state, multi-agent
         ├── distributed_rag.md           ← lineage, multi-store sync, embedding drift
         ├── financial_audit_ledger.md    ← dual-entry, hash-chained, CA-grade ledger

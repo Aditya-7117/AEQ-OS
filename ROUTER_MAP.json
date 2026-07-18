@@ -1,6 +1,6 @@
 {
   "os": "AEQ-OS",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "installed": "2026-07-10",
   "updated": "2026-07-18",
   "boot": "BOOT.md",
@@ -33,9 +33,10 @@
       },
       "load": [
         "DOMAINS/quant_trading_engine.md",
-        "DOMAINS/financial_audit_ledger.md"
+        "DOMAINS/financial_audit_ledger.md",
+        "DOMAINS/exhaustive_research.md"
       ],
-      "notes": "QT-DET parity rules apply even offline; the ledger books simulated fills so paper and live accounting share one code path."
+      "notes": "QT-DET parity rules apply even offline; the ledger books simulated fills so paper and live accounting share one code path. exhaustive_research.md governs how the backtest itself is run — hypothesis-space breadth, cost/regime sensitivity, negative-result reporting — not just the code that runs it."
     },
     {
       "id": "quant_live_execution",
@@ -48,9 +49,11 @@
       "load": [
         "DOMAINS/quant_trading_engine.md",
         "DOMAINS/live_trading_gate.md",
-        "DOMAINS/financial_audit_ledger.md"
+        "DOMAINS/financial_audit_ledger.md",
+        "DOMAINS/exhaustive_research.md"
       ],
-      "hard_gate": "DOMAINS/live_trading_gate.md — every LIVE-n item must PASS before any live deploy; no overrides"
+      "hard_gate": "DOMAINS/live_trading_gate.md — every LIVE-n item must PASS before any live deploy; no overrides",
+      "notes": "exhaustive_research.md's RESEARCH-17 is the gate LIVE-17's shadow-stage ramp assumes was already satisfied before shadow trading begins."
     },
     {
       "id": "ai_agents",

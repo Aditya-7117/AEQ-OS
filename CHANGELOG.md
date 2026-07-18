@@ -2,6 +2,13 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.3.0] — 2026-07-18
+
+### Added
+- `DOMAINS/exhaustive_research.md` (`RESEARCH-1..20`) — pushes backtesting research past literally testing what was asked: hypothesis-space breadth (`RESEARCH-1/2`), cost/regime sensitivity bands (`RESEARCH-3/4`), overfitting guards (`RESEARCH-5/6/8`), negative-result reporting (`RESEARCH-11`), and a live-readiness gate (`RESEARCH-17`) feeding `LIVE-17`'s shadow-stage ramp.
+- Loaded by both `quant_research_backtest` and `quant_live_execution` routes in `ROUTER_MAP.json`.
+- `scripts/status.sh` — on-demand installation health check (symlink integrity, per-tool pointer wiring, `validate.py` result, rule-ID citation evidence from real project git history). Explicitly not a background dashboard — see `README.md` FAQ for why.
+
 ## [1.2.0] — 2026-07-18
 
 ### Added
