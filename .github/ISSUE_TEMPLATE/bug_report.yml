@@ -1,0 +1,23 @@
+name: Bug report
+description: A rule is wrong, contradicts another rule, or the validator missed something it should have caught
+labels: ["bug"]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: File and rule ID
+      placeholder: "DOMAINS/quant_trading_engine.md — QT-STOP-3"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong
+      description: Quote the rule text. Explain the failure scenario it permits or the contradiction it creates.
+    validations:
+      required: true
+  - type: textarea
+    id: fix
+    attributes:
+      label: Suggested fix
+      description: Optional — a proposed rewrite, or a new rule ID that would close the gap.

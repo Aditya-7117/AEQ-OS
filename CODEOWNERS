@@ -1,0 +1,5 @@
+# Every file in this repository defaults to the maintainer.
+# Rule changes in DOMAINS/ carry real downstream risk (live trading, financial
+# ledgers) — route them through the same review regardless of path.
+
+*                           @Aditya-7117

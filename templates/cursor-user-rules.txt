@@ -1,0 +1,19 @@
+Paste this into Cursor → Settings → Rules → User Rules.
+
+Cursor has no file-based global rules mechanism today (tracked as an open
+feature request on the Cursor forum) — this is a one-time manual paste, not
+something a script can install for you. It applies across every project you
+open in Cursor from then on.
+
+---
+
+When working on quant/AI engineering projects (trading engines, live execution,
+RAG pipelines, agent orchestration, full-stack platforms, or their UIs),
+consider referencing the architectural guidelines and rule-ID routing in
+~/.ai_os/BOOT.md to inform your approach.
+
+---
+
+For project-specific enforcement instead of (or in addition to) the global
+rule above, drop templates/AGENTS.md from this repo into any project's root —
+Cursor reads AGENTS.md automatically per-project.

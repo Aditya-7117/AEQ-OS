@@ -1,0 +1,29 @@
+name: New domain proposal
+description: Propose an entirely new DOMAINS/*.md file with its own rule-ID prefix
+labels: ["enhancement", "new-domain"]
+body:
+  - type: input
+    id: domain
+    attributes:
+      label: Domain name and proposed prefix
+      placeholder: "e.g. DOMAINS/mobile_native.md, prefix MOBILE-n"
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this deserves its own file rather than folding into an existing one
+    validations:
+      required: true
+  - type: textarea
+    id: router
+    attributes:
+      label: Router signals
+      description: What keywords/dependencies/paths should route a project into this domain? Does it combine with existing routes (see ROUTER_MAP.json combination_examples)?
+    validations:
+      required: true
+  - type: textarea
+    id: rules
+    attributes:
+      label: Draft rule list
+      description: Doesn't need to be final — even a bullet outline helps reviewers gauge scope.

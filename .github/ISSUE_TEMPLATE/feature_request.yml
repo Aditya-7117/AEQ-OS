@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest a new rule, a new domain file, or a new router route
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - New rule in an existing domain file
+        - New domain file (new rule-ID prefix)
+        - New router route / signal
+        - Tooling (validate.py, CI, install scripts)
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What gap does this close
+      description: What failure mode, incident, or missing coverage motivates this?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed rule text or design

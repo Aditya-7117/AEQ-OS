@@ -1,0 +1,174 @@
+{
+  "os": "AEQ-OS",
+  "version": "1.2.0",
+  "installed": "2026-07-10",
+  "updated": "2026-07-18",
+  "boot": "BOOT.md",
+  "always_load": [
+    "CORE/constitution.md",
+    "CORE/model_adaptation.md",
+    "CORE/stack_selection.md",
+    "CORE/verification_protocol.md"
+  ],
+  "precedence_low_to_high": [
+    "CORE/*",
+    "DOMAINS/*",
+    "DOMAINS/live_trading_gate.md"
+  ],
+  "resolution": {
+    "multiple_matches": "load the union of all matched routes",
+    "no_match": "route generic_software",
+    "ambiguous": "ask the user, listing candidate route ids",
+    "hard_rule": "if real funds or live venue API keys are reachable from the code being written, DOMAINS/live_trading_gate.md and DOMAINS/financial_audit_ledger.md are mandatory regardless of matched route",
+    "deploy_rule": "if the task merges to a deployed branch or ships to production infrastructure, DOMAINS/deployment_and_audit.md is mandatory in addition to the matched routes"
+  },
+  "routes": [
+    {
+      "id": "quant_research_backtest",
+      "description": "Strategy research, backtesting, signal/alpha work; no live keys reachable",
+      "signals": {
+        "keywords": ["backtest", "alpha", "signal research", "strategy research", "walk-forward", "sharpe", "factor model"],
+        "dependencies": ["vectorbt", "backtrader", "zipline", "nautilus_trader", "pandas-ta", "ta-lib"],
+        "paths": ["backtest/", "research/", "strategies/", "signals/"]
+      },
+      "load": [
+        "DOMAINS/quant_trading_engine.md",
+        "DOMAINS/financial_audit_ledger.md"
+      ],
+      "notes": "QT-DET parity rules apply even offline; the ledger books simulated fills so paper and live accounting share one code path."
+    },
+    {
+      "id": "quant_live_execution",
+      "description": "Order execution, market-making, trailing stops — anything touching venue APIs with real keys",
+      "signals": {
+        "keywords": ["live trading", "execution engine", "order router", "trailing stop", "market making", "hft", "websocket feed", "oms", "smart order routing"],
+        "dependencies": ["ccxt", "hummingbot", "binance-connector", "bybit", "ib_insync", "alpaca-py"],
+        "paths": ["execution/", "gateway/", "oms/", "live/"]
+      },
+      "load": [
+        "DOMAINS/quant_trading_engine.md",
+        "DOMAINS/live_trading_gate.md",
+        "DOMAINS/financial_audit_ledger.md"
+      ],
+      "hard_gate": "DOMAINS/live_trading_gate.md — every LIVE-n item must PASS before any live deploy; no overrides"
+    },
+    {
+      "id": "ai_agents",
+      "description": "LLM agentic loops, multi-agent orchestration, tool-using assistants",
+      "signals": {
+        "keywords": ["agent", "orchestration", "tool use", "multi-agent", "autonomous loop", "assistant", "workflow engine"],
+        "dependencies": ["anthropic", "openai", "langgraph", "crewai", "autogen", "claude-agent-sdk", "pydantic-ai"],
+        "paths": ["agents/", "orchestrator/", "pipelines/"]
+      },
+      "load": [
+        "DOMAINS/ai_agent_orchestration.md",
+        "DOMAINS/financial_audit_ledger.md"
+      ],
+      "notes": "Ledger is loaded for AGT-2/LGR-16 spend metering — budget caps must be auditable, not advisory."
+    },
+    {
+      "id": "rl_training",
+      "description": "Reinforcement learning training or serving pipelines",
+      "signals": {
+        "keywords": ["reinforcement learning", "reward", "policy", "replay buffer", "environment", "ppo", "dqn", "rollout"],
+        "dependencies": ["gymnasium", "stable-baselines3", "ray", "rllib", "torchrl", "pettingzoo"],
+        "paths": ["rl/", "envs/", "training/"]
+      },
+      "load": [
+        "DOMAINS/ai_agent_orchestration.md"
+      ],
+      "notes": "AGT section 5 is the core payload. If the environment is a market or the policy places orders, quant_live_execution also matches — load the union."
+    },
+    {
+      "id": "rag_retrieval",
+      "description": "RAG pipelines: ingestion, chunking, embeddings, vector stores, retrieval",
+      "signals": {
+        "keywords": ["rag", "retrieval", "embedding", "vector db", "chunking", "reranker", "semantic search", "knowledge base"],
+        "dependencies": ["qdrant-client", "weaviate-client", "pinecone", "pgvector", "chromadb", "llama-index", "langchain"],
+        "paths": ["ingestion/", "retrieval/", "rag/", "embeddings/"]
+      },
+      "load": [
+        "DOMAINS/distributed_rag.md",
+        "DOMAINS/ai_agent_orchestration.md"
+      ]
+    },
+    {
+      "id": "fullstack_platform",
+      "description": "Backend services, APIs, databases, platform-grade systems (enterprise ledgers, manufacturing, asset inventories)",
+      "signals": {
+        "keywords": ["api", "backend", "database", "migration", "microservice", "platform", "saas", "inventory", "erp", "crud"],
+        "dependencies": ["fastapi", "django", "flask", "express", "nestjs", "spring-boot", "rails", "prisma", "sqlalchemy", "drizzle-orm", "gorm"],
+        "paths": ["api/", "server/", "backend/", "migrations/", "services/", "db/"]
+      },
+      "load": [
+        "DOMAINS/fullstack_architecture.md"
+      ],
+      "notes": "If the platform books money or inventory quantities, financial_audit_ledger.md is strongly indicated; FS-14..16 assume it for balance math."
+    },
+    {
+      "id": "ui_frontend",
+      "description": "Frontends, dashboards, terminal interfaces, design systems",
+      "signals": {
+        "keywords": ["frontend", "ui", "dashboard", "component", "design system", "terminal interface", "data grid", "charting"],
+        "dependencies": ["react", "next", "vue", "svelte", "solid-js", "tailwindcss", "d3", "lightweight-charts", "ag-grid"],
+        "paths": ["frontend/", "ui/", "app/", "src/components/", "src/pages/"]
+      },
+      "load": [
+        "DOMAINS/ui_ux_design_system.md",
+        "DOMAINS/fullstack_architecture.md"
+      ],
+      "notes": "fullstack_architecture.md rides along for FS-17..FS-20 — a frontend that consumes APIs is a contract consumer and belongs on the blast-radius map."
+    },
+    {
+      "id": "deploy_release",
+      "description": "CI/CD, infrastructure-as-code, production deployment and release engineering",
+      "signals": {
+        "keywords": ["deploy", "release", "ci/cd", "pipeline", "rollout", "canary", "blue-green", "infrastructure", "terraform"],
+        "dependencies": ["terraform", "pulumi", "kubernetes", "helm", "ansible", "docker"],
+        "paths": [".github/workflows/", "deploy/", "infra/", "terraform/", "k8s/", "charts/"]
+      },
+      "load": [
+        "DOMAINS/deployment_and_audit.md"
+      ],
+      "notes": "Also loaded implicitly by the deploy_rule whenever any other route's task ships to production."
+    },
+    {
+      "id": "generic_software",
+      "description": "Anything else — CORE alone governs",
+      "signals": {},
+      "load": []
+    }
+  ],
+  "combination_examples": [
+    {
+      "project": "agentic trading bot with live execution",
+      "routes": ["ai_agents", "quant_live_execution"],
+      "effective_load": "union of both routes; live_trading_gate.md governs via the hard_rule"
+    },
+    {
+      "project": "RAG over trade documents feeding a research agent",
+      "routes": ["rag_retrieval", "ai_agents"],
+      "effective_load": "union of both routes"
+    },
+    {
+      "project": "RL policy trained on market simulator, deployed to live venue",
+      "routes": ["rl_training", "quant_live_execution"],
+      "effective_load": "union; both AGT-14 reward probes and every LIVE-n gate apply"
+    },
+    {
+      "project": "live trading dashboard frontend",
+      "routes": ["ui_frontend", "quant_research_backtest"],
+      "effective_load": "union; UIUX-10/11 render the QT-WS-1 feed states; add quant_live_execution + hard_rule only if the UI can place orders"
+    },
+    {
+      "project": "enterprise inventory platform with an AI copilot",
+      "routes": ["fullstack_platform", "ai_agents"],
+      "effective_load": "union; FS-14..16 govern inventory math, AGT-19 gates the copilot's irreversible actions"
+    },
+    {
+      "project": "shipping any of the above to production",
+      "routes": ["<matched routes>", "deploy_release"],
+      "effective_load": "matched routes + deployment_and_audit.md via the deploy_rule"
+    }
+  ]
+}
