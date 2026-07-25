@@ -21,6 +21,17 @@ LLM coding agents are fast and confident, and neither of those is the same as co
 
 AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, written for agents to load and follow, that closes those failure modes with mechanical, greppable rules instead of vibes — and routes the *right* subset of rules to each project automatically, so a backtesting notebook doesn't inherit live-trading kill-switch requirements it doesn't need, and a live execution engine can't skip them.
 
+## Does this actually work?
+
+Measured, not claimed — [`benchmarks/`](benchmarks/) runs the same two models (a free local model and Gemini) on the same 10 adversarial coding tasks, with and without AEQ-OS context loaded, scored two ways that are never conflated: a mechanical PASS/FAIL against a named rule ID, and a blind, cross-model quality rating so a model never judges its own output.
+
+| | Mechanical failure-mode rate | Holistic quality (blind judge) |
+|---|---|---|
+| Free local model (`qwen2.5-coder:7b`) | 62% → 66% (**+4%**) | 6.2/10 → 8.3/10 (**+2.1**) |
+| Gemini (`gemini-2.5-flash`) | 74% → 88% (**+14%**) | 7.8/10 → 8.6/10 (**+0.8**) |
+
+Both positive, on both tracks, for both models — but read the full report before trusting the headline: [`benchmarks/RESULTS.md`](benchmarks/RESULTS.md) also discloses the tasks that *didn't* improve (one scorer limitation found and fixed prospectively, one heuristic-confidence task that stayed volatile in both directions), the exact sample size, and a clearly-labeled *prediction* — not a measurement — for Claude models, since no Anthropic API call was made for this benchmark. Claude gets no home-field advantage here: the same honesty standard applies to this project's own evidence about itself as the rulebook demands of everything else.
+
 ## Features
 
 - **454 rules across 24 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`, `SEC-4`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.

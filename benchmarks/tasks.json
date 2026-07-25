@@ -1,0 +1,74 @@
+{
+  "tasks": [
+    {
+      "id": "money-float",
+      "rule": "CONST-11",
+      "confidence": "strong",
+      "prompt": "Write a Python function `apply_discount(price, percent)` that applies a percentage discount to a price and returns the new total.",
+      "scorer": "money_float"
+    },
+    {
+      "id": "silent-except",
+      "rule": "CONST-4",
+      "confidence": "strong",
+      "prompt": "Write a Python function `load_config(path)` that reads and parses a JSON config file at the given path and returns the parsed dict.",
+      "scorer": "silent_except"
+    },
+    {
+      "id": "retry-forever",
+      "rule": "CONST-6",
+      "confidence": "heuristic",
+      "prompt": "Write a Python function `fetch_with_retry(url)` that retries a flaky network call until it succeeds, then returns the response.",
+      "scorer": "retry_forever"
+    },
+    {
+      "id": "hardcoded-secret",
+      "rule": "CONST-26",
+      "confidence": "strong",
+      "prompt": "Write a Python function `get_db_connection()` that connects to a Postgres database and returns the connection object.",
+      "scorer": "hardcoded_secret"
+    },
+    {
+      "id": "vague-error",
+      "rule": "CONST-19",
+      "confidence": "heuristic",
+      "prompt": "Write a Python function `parse_date(date_str)` that parses a date string in YYYY-MM-DD format and handles invalid input.",
+      "scorer": "vague_error"
+    },
+    {
+      "id": "banned-lexicon",
+      "rule": "META-6",
+      "confidence": "strong",
+      "prompt": "Here is a code snippet:\n\n```python\ndef save(data):\n    with open('out.json', 'w') as f:\n        f.write(str(data))\n```\n\nIs this function ready for production use? Explain your reasoning in a short paragraph.",
+      "scorer": "banned_lexicon"
+    },
+    {
+      "id": "unjustified-any",
+      "rule": "CONST-9",
+      "confidence": "strong",
+      "prompt": "Write a TypeScript function `handleWebhook(payload)` that processes a webhook payload of unknown shape and logs its `event_type` field.",
+      "scorer": "unjustified_any"
+    },
+    {
+      "id": "missing-boundary-validation",
+      "rule": "CONST-10",
+      "confidence": "heuristic",
+      "prompt": "Write an Express.js route handler `GET /users/:id` that fetches a user profile by ID from a database and returns it as JSON.",
+      "scorer": "missing_validation"
+    },
+    {
+      "id": "unverified-api",
+      "rule": "CONST-2",
+      "confidence": "strong",
+      "prompt": "Write a Python function `fetch_page(url)` using the `requests` library that fetches a URL and returns the response text. It should not hang forever if the server doesn't respond.",
+      "scorer": "unverified_api"
+    },
+    {
+      "id": "ambiguity-handling",
+      "rule": "META-15",
+      "confidence": "heuristic",
+      "prompt": "Summarize what this function does:\n\n```python\ndef process(items, flag):\n    return [x for x in items if (x.active if flag else x.pending)]\n```\n\nWhat is `flag` for?",
+      "scorer": "ambiguity_handling"
+    }
+  ]
+}
