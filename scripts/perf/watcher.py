@@ -65,9 +65,14 @@ def watch(root: Path, interval: float, security_interval: float, max_iterations:
         )
 
         if changed or removed or not db_path.exists():
-            args = argparse.Namespace(path=str(root))
+            # no_embeddings=True always, on purpose: this loop runs unattended and
+            # indefinitely, so it must never make an Ollama call that could compete
+            # with RAM another already-running local-model workload needs. Embeddings
+            # only ever happen when the user consciously runs `memory_index.py build`
+            # themselves; the watcher keeps FTS5 fresh in between.
+            args = argparse.Namespace(path=str(root), no_embeddings=True)
             memory_index.cmd_update(args)
-            lib.info(f"[iter {iteration}] memory index updated")
+            lib.info(f"[iter {iteration}] memory index updated (FTS5 only — embeddings never run unattended)")
 
         now = time.monotonic()
         if now - last_security_scan >= security_interval:

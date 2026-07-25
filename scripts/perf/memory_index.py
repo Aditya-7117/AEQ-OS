@@ -201,7 +201,10 @@ def cmd_update(args: argparse.Namespace) -> int:
 
     config = lib.load_performance_config(root)
     embed_cfg = config.get("memory_index", {}).get("embeddings", "none")
-    embed_model = embed_cfg.split(":", 1)[1] if embed_cfg.startswith("ollama:") else None
+    force_no_embed = getattr(args, "no_embeddings", False)
+    embed_model = None if force_no_embed else (
+        embed_cfg.split(":", 1)[1] if embed_cfg.startswith("ollama:") else None
+    )
 
     con = open_db(mem_dir)
     known = dict(con.execute("SELECT path, mtime FROM files").fetchall())
@@ -314,6 +317,10 @@ def main() -> int:
 
     p_update = sub.add_parser("update", help="incrementally reindex changed files")
     p_update.add_argument("--path", help="project path (default: auto-detect from cwd)")
+    p_update.add_argument("--no-embeddings", action="store_true",
+                           help="skip Ollama calls even if this project has embeddings configured "
+                                "(used by watcher.py so the unattended background loop never "
+                                "competes with other local-model RAM usage)")
     p_update.set_defaults(func=cmd_update)
 
     p_search = sub.add_parser("search", help="query the index")

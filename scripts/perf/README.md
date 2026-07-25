@@ -67,7 +67,15 @@ scripts/perf/uninstall_watcher.sh <project>                      # remove a gene
 `watcher.py` is a bounded polling loop with a clean shutdown path (`SIGTERM`/
 `SIGINT` exit it immediately, no orphaned process) — it re-indexes memory
 when files change and re-runs the security scan on a longer interval
-(`--security-interval`, default 6h).
+(`--security-interval`, default 6h). The process itself is small (~28MB RSS,
+measured directly — negligible on any machine). **It never calls Ollama.**
+Automatic background reindexing always runs FTS5-only, even for a project
+that has embeddings configured — this is deliberate, so an unattended loop
+can never compete for RAM with another local-model workload you're already
+running (e.g. a separate project using large local models via the same
+Ollama server). Semantic search stays available from whatever you last built
+manually; embeddings are only ever computed when you consciously run
+`memory_index.py build` yourself.
 
 `install_watcher.sh` generates a launchd plist (macOS) or a systemd `--user`
 unit (Linux), uniquely labeled per project (`com.aeq-os.watcher.<project>`),
