@@ -2,6 +2,13 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.7.1] — 2026-07-25
+
+### Fixed
+- `scripts/perf/watcher.py`'s pause behavior rebuilt on launchd/systemd's own restart primitives instead of an internal idle-and-recheck loop: it now `sys.exit(0)`s as soon as a configured pause condition is true (at startup and mid-run), and `install_watcher.sh` sets `ThrottleInterval=60`/`Restart=always`+`RestartSec=60` so the service manager relaunches it roughly once a minute until the condition clears — no manual restart ever required, no polling loop of the tool's own to get wrong. Verified with three scenarios (normal run, immediate exit when already paused, prompt exit mid-run) before redeploying onto a live running instance.
+- `scripts/perf/lib.py` now line-buffers stdout/stderr — Python block-buffers by default when output isn't a TTY (every launchd/systemd log redirection), so a long-running Performance-tier process's log could previously sit unflushed for its entire run. Benefits every tool in `scripts/perf/`, not just the watcher.
+- `.gitignore` now excludes `.ai_os/` — machine-local memory index and Performance-tier config, same category as `benchmarks/results/`, never meant to be published.
+
 ## [1.7.0] — 2026-07-25
 
 ### Added
