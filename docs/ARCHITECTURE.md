@@ -119,7 +119,7 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 |---|---|---|
 | `CONST` | 33 | `CORE/constitution.md` |
 | `SEC` | 18 | `CORE/security_baseline.md` |
-| `META` | 16 | `CORE/model_adaptation.md` |
+| `META` | 17 | `CORE/model_adaptation.md` |
 | `INT` | 14 | `CORE/intent_resolution.md` |
 | `MEM` | 15 | `CORE/memory_governance.md` |
 | `LEARN` | 14 | `CORE/learning_engine.md` |
@@ -146,7 +146,7 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 | `UIUX` | 20 | `DOMAINS/ui_ux_design_system.md` |
 | `DEP` | 20 | `DOMAINS/deployment_and_audit.md` |
 | `PROD` | 18 | `DOMAINS/production_readiness.md` |
-| **Total** | **418** | |
+| **Total** | **419** | |
 
 Resolve any rule ID from anywhere:
 

@@ -8,7 +8,7 @@ A model-agnostic instruction layer that makes coding agents behave like institut
 
 [![Validate](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml/badge.svg)](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Rule IDs](https://img.shields.io/badge/rule--IDs-418-blue)](docs/ARCHITECTURE.md#rule-index)
+[![Rule IDs](https://img.shields.io/badge/rule--IDs-419-blue)](docs/ARCHITECTURE.md#rule-index)
 [![Model agnostic](https://img.shields.io/badge/models-Claude%20%7C%20Antigravity%20%7C%20Cursor%20%7C%20Windsurf%20%7C%20Copilot%20%7C%20any-informational)](#installation)
 
 </div>
@@ -23,7 +23,7 @@ AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, writte
 
 ## Features
 
-- **418 rules across 22 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`, `SEC-4`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
+- **419 rules across 22 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`, `SEC-4`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
 - **Automatic routing.** `ROUTER_MAP.json` classifies a project by keyword/dependency/path signals and loads only the relevant domain files — with a hard override that force-loads the live-trading gate the instant real capital is reachable, no matter what else matched.
 - **A real quality gate, not a suggestion.** `CORE/verification_protocol.md` defines G0–G4: enumerated acceptance criteria → zero-warning static pass → failure-path/property tests → captured runtime evidence → a self-audit with a mutation spot-check. "Done" requires an evidence table, not a claim. `DOMAINS/production_readiness.md` adds a scored pre-launch audit on top for anything shipping to production.
 - **A named registry of LLM failure modes** (`CORE/model_adaptation.md`) — placeholder elision, premature completion, hallucinated APIs, scope shrink, confidence inflation, sycophantic agreement, test-gaming — each bound to a specific, mechanical countermeasure, plus a banned-lexicon list a script actually checks.
