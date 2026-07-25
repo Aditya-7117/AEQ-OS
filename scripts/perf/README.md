@@ -66,13 +66,18 @@ scripts/perf/uninstall_watcher.sh <project>                        # remove a ge
 ```
 
 **Deferring to another RAM-heavy workload:** pass `--pause-if-pidfile` and/or
-`--pause-if-ollama-model` (either flag repeatable) to make the watcher skip
-*all* work for an iteration — no reindex, no scan — whenever a named process
-is alive or a named Ollama model is currently loaded (checked live via
-`/api/ps`, not just "pulled"), resuming automatically once neither holds.
-Empty by default — nothing pauses unless you configure it; this isn't tied
-to any specific app. Example, for a machine also running a separate project
-that loads large local models through the same Ollama server:
+`--pause-if-ollama-model` (either flag repeatable) to make the watcher defer
+to another process entirely — not by idling in place, but by **exiting the
+process**, checked live via `/api/ps` (not just "pulled") for the model
+case. `install_watcher.sh` sets `ThrottleInterval`/`RestartSec` to 60s on the
+generated unit, so the service manager (launchd/systemd) — not a polling
+loop inside the script — brings it back automatically once the condition
+clears, checking roughly once a minute. No manual restart, no leftover idle
+process while the other workload is active; the watcher genuinely
+disappears from the process list and reappears on its own. Empty by
+default — nothing pauses unless you configure it; this isn't tied to any
+specific app. Example, for a machine also running a separate project that
+loads large local models through the same Ollama server:
 
 ```bash
 scripts/perf/install_watcher.sh ~/Projects/my-project \

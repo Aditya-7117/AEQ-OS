@@ -14,6 +14,17 @@ from pathlib import Path
 
 USE_COLOR = sys.stdout.isatty()
 
+# Python block-buffers stdout/stderr when they're not a TTY — the case for
+# every launchd/systemd-redirected log file. Without this, a long-running
+# process like watcher.py can sit for its entire run with nothing actually
+# written to its log, making it unobservable exactly when observability
+# matters most (a crash, a stuck loop). Line-buffer so log output appears
+# promptly regardless of how a Performance-tier tool is invoked.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(line_buffering=True)
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(line_buffering=True)
+
 
 def _c(code: str, text: str) -> str:
     return f"\033[{code}m{text}\033[0m" if USE_COLOR else text

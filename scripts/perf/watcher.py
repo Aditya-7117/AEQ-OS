@@ -100,30 +100,28 @@ def watch(
     mem_dir = lib.memory_dir(root)
     lib.ok(f"watcher started for {root} (interval={interval}s, security_interval={security_interval}s)")
     if pause_pidfiles or pause_models:
-        lib.info(f"will pause all work while: pidfiles={pause_pidfiles} models={pause_models}")
+        lib.info(f"defers fully while: pidfiles={pause_pidfiles} models={pause_models} — "
+                 f"exits the process (not just idles) so the service manager's own "
+                 f"restart-on-exit brings it back once the condition clears; see "
+                 f"install_watcher.sh's ThrottleInterval/RestartSec for the recheck cadence")
+
+    pause_reason = should_pause(pause_pidfiles, pause_models)
+    if pause_reason:
+        lib.info(f"paused before starting — {pause_reason}. Exiting immediately; "
+                 f"the service manager will retry shortly on its own.")
+        return 0
 
     last_security_scan = 0.0
     iteration = 0
-    was_paused = False
 
     while not _stop:
         iteration += 1
 
         pause_reason = should_pause(pause_pidfiles, pause_models)
         if pause_reason:
-            if not was_paused:
-                lib.info(f"[iter {iteration}] paused — {pause_reason}. Skipping reindex/scan until it clears.")
-                was_paused = True
-            if max_iterations is not None and iteration >= max_iterations:
-                break
-            for _ in range(int(interval)):
-                if _stop:
-                    break
-                time.sleep(1)
-            continue
-        if was_paused:
-            lib.info(f"[iter {iteration}] resumed — pause condition cleared")
-            was_paused = False
+            lib.info(f"[iter {iteration}] {pause_reason} — exiting so the service manager "
+                     f"can restart me once it clears. No polling loop, no idle process.")
+            return 0
 
         known = {}
         db_path = memory_index.index_db_path(mem_dir)

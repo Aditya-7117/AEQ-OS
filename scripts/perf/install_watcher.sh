@@ -104,6 +104,8 @@ $(build_pause_args_xml)
     <true/>
     <key>KeepAlive</key>
     <true/>
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
     <key>StandardOutPath</key>
     <string>${LOG_DIR}/watcher.log</string>
     <key>StandardErrorPath</key>
@@ -134,7 +136,8 @@ Description=AEQ-OS Performance-tier watcher for ${PROJECT}
 [Service]
 Type=simple
 ExecStart=${PYTHON_BIN} ${WATCHER_PY} --path ${PROJECT} --interval ${INTERVAL}$(build_pause_args_shell)
-Restart=on-failure
+Restart=always
+RestartSec=60
 
 [Install]
 WantedBy=default.target
