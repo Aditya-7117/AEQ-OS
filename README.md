@@ -4,7 +4,7 @@
 
 **AI Engineering & Quant Operating System**
 
-A model-agnostic instruction layer that makes coding agents behave like institutional engineers — on quant trading systems, AI agent orchestration, RAG pipelines, and the full-stack platforms around them.
+Your coding agent is fast, confident, and — left to its own defaults — wrong in ways that don't show up until production. AEQ-OS is the instruction layer that fixes that: one install, and Claude Code, Cursor, Antigravity, Windsurf, Copilot, or any open-source model you point at your repo starts writing code held to institutional-engineer standards instead of demo-quality defaults. Not just for quant and trading systems — the same rulebook governs every agentic pipeline, RAG system, and full-stack platform you build, model-agnostic and tool-agnostic from the first line.
 
 [![Validate](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml/badge.svg)](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -17,7 +17,7 @@ A model-agnostic instruction layer that makes coding agents behave like institut
 
 ## The problem
 
-LLM coding agents are fast and confident, and neither of those is the same as correct. Left to their own defaults, they placeholder-stub hard parts, claim completion without running anything, silently swallow errors, and reach for `float` for money. That's an annoyance in a CRUD app. It's a production incident in a trading engine, and it's an invisible one in an AI agent's budget logic or an RL reward function.
+Left to their own defaults, coding agents placeholder-stub hard parts, claim completion without running anything, silently swallow errors, and reach for `float` for money. That's an annoyance in a CRUD app. It's a production incident in a trading engine, and it's an invisible one in an AI agent's budget logic or an RL reward function — the kind of bug that doesn't announce itself until the money's already gone.
 
 AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, written for agents to load and follow, that closes those failure modes with mechanical, greppable rules instead of vibes — and routes the *right* subset of rules to each project automatically, so a backtesting notebook doesn't inherit live-trading kill-switch requirements it doesn't need, and a live execution engine can't skip them.
 
