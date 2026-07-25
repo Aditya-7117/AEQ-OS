@@ -49,7 +49,27 @@ else
   bad "Google Antigravity — ~/.gemini/AGENTS.md missing or not pointing at BOOT.md (see templates/AGENTS.md)"
 fi
 
+if [ -f "$HOME/.codeium/windsurf/memories/global_rules.md" ] && grep -q "ai_os/BOOT.md" "$HOME/.codeium/windsurf/memories/global_rules.md" 2>/dev/null; then
+  ok "Windsurf — ~/.codeium/windsurf/memories/global_rules.md points at BOOT.md"
+else
+  info "Windsurf — global_rules.md missing or not pointing at BOOT.md (see templates/windsurf-rules.md; optional if you only use project-root wiring)"
+fi
+
 info "Cursor — global User Rules live in app settings, not a file; can't be checked from disk. See templates/cursor-user-rules.txt."
+info "GitHub Copilot — global custom instructions live in your GitHub account settings, not a file; can't be checked from disk."
+echo
+
+echo "Project-root discovery (current directory: $(pwd)):"
+FOUND_PROJECT_POINTER=0
+for f in AGENTS.md CLAUDE.md .windsurfrules .clinerules .github/copilot-instructions.md CONVENTIONS.md; do
+  if [ -f "$f" ] && grep -q "ai_os/BOOT.md" "$f" 2>/dev/null; then
+    ok "$f points at BOOT.md"
+    FOUND_PROJECT_POINTER=1
+  fi
+done
+if [ "$FOUND_PROJECT_POINTER" -eq 0 ]; then
+  info "no project-root pointer found here — run 'scripts/adopt-project.sh' to stamp this project with one (needed for any tool that isn't globally wired on this machine, e.g. a teammate's clone)"
+fi
 echo
 
 echo "Rulebook integrity:"
@@ -70,6 +90,7 @@ if [ -d "$HOME/Projects" ]; then
       --grep='CONST-[0-9]' --grep='QT-[A-Z]*-[0-9]' --grep='LIVE-[0-9]' \
       --grep='AGT-[0-9]' --grep='RAG-[0-9]' --grep='LGR-[0-9]' \
       --grep='FS-[0-9]' --grep='UIUX-[0-9]' --grep='DEP-[0-9]' --grep='RESEARCH-[0-9]' \
+      --grep='SEC-[0-9]' --grep='INT-[0-9]' --grep='MEM-[0-9]' --grep='LEARN-[0-9]' --grep='PROD-[0-9]' \
       2>/dev/null | wc -l | tr -d ' ')
     if [ "${HITS:-0}" -gt 0 ]; then
       ok "$(basename "$proj") — $HITS commit(s) citing a rule ID"

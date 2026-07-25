@@ -1,12 +1,16 @@
 {
   "os": "AEQ-OS",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "installed": "2026-07-10",
-  "updated": "2026-07-18",
+  "updated": "2026-07-25",
   "boot": "BOOT.md",
   "always_load": [
     "CORE/constitution.md",
+    "CORE/security_baseline.md",
     "CORE/model_adaptation.md",
+    "CORE/intent_resolution.md",
+    "CORE/memory_governance.md",
+    "CORE/learning_engine.md",
     "CORE/stack_selection.md",
     "CORE/verification_protocol.md"
   ],
@@ -20,7 +24,7 @@
     "no_match": "route generic_software",
     "ambiguous": "ask the user, listing candidate route ids",
     "hard_rule": "if real funds or live venue API keys are reachable from the code being written, DOMAINS/live_trading_gate.md, DOMAINS/financial_audit_ledger.md, and DOMAINS/trading_compliance.md are mandatory regardless of matched route",
-    "deploy_rule": "if the task merges to a deployed branch or ships to production infrastructure, DOMAINS/deployment_and_audit.md is mandatory in addition to the matched routes"
+    "deploy_rule": "if the task merges to a deployed branch or ships to production infrastructure, DOMAINS/deployment_and_audit.md and DOMAINS/production_readiness.md are both mandatory in addition to the matched routes — deployment_and_audit.md governs release mechanics, production_readiness.md governs whether the system itself is institutional-grade before it ships; neither substitutes for the other"
   },
   "routes": [
     {
@@ -139,7 +143,8 @@
         "paths": [".github/workflows/", "deploy/", "infra/", "terraform/", "k8s/", "charts/"]
       },
       "load": [
-        "DOMAINS/deployment_and_audit.md"
+        "DOMAINS/deployment_and_audit.md",
+        "DOMAINS/production_readiness.md"
       ],
       "notes": "Also loaded implicitly by the deploy_rule whenever any other route's task ships to production."
     },
@@ -179,7 +184,12 @@
     {
       "project": "shipping any of the above to production",
       "routes": ["<matched routes>", "deploy_release"],
-      "effective_load": "matched routes + deployment_and_audit.md via the deploy_rule"
+      "effective_load": "matched routes + deployment_and_audit.md + production_readiness.md via the deploy_rule"
+    },
+    {
+      "project": "a fullstack platform's first production launch",
+      "routes": ["fullstack_platform", "deploy_release"],
+      "effective_load": "fullstack_architecture.md governs the code; deployment_and_audit.md governs how the diff ships; production_readiness.md's PROD-17 first-launch gate requires every pillar PASS or an owned FLAG before the launch itself, on top of both"
     }
   ]
 }
