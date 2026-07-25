@@ -1,6 +1,6 @@
 {
   "os": "AEQ-OS",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "installed": "2026-07-10",
   "updated": "2026-07-25",
   "boot": "BOOT.md",
@@ -76,9 +76,11 @@
       },
       "load": [
         "DOMAINS/ai_agent_orchestration.md",
-        "DOMAINS/financial_audit_ledger.md"
+        "DOMAINS/financial_audit_ledger.md",
+        "DOMAINS/prompt_engineering.md",
+        "DOMAINS/ai_evaluation.md"
       ],
-      "notes": "Ledger is loaded for AGT-2/LGR-16 spend metering — budget caps must be auditable, not advisory."
+      "notes": "Ledger is loaded for AGT-2/LGR-16 spend metering — budget caps must be auditable, not advisory. prompt_engineering.md and ai_evaluation.md ride along because any agentic loop is built on prompts that need the same versioning/regression discipline as the code driving them."
     },
     {
       "id": "rl_training",
@@ -104,8 +106,24 @@
       },
       "load": [
         "DOMAINS/distributed_rag.md",
-        "DOMAINS/ai_agent_orchestration.md"
+        "DOMAINS/ai_agent_orchestration.md",
+        "DOMAINS/prompt_engineering.md",
+        "DOMAINS/ai_evaluation.md"
       ]
+    },
+    {
+      "id": "ai_prompting_evals",
+      "description": "Prompt engineering and/or AI evaluation work not otherwise wrapped in a full agent or RAG pipeline — a prompt library, an eval harness, an LLM-as-judge script",
+      "signals": {
+        "keywords": ["prompt template", "prompt engineering", "few-shot", "system prompt", "eval", "evals", "evaluation harness", "golden dataset", "llm-as-judge", "llm judge"],
+        "dependencies": ["promptfoo", "langfuse", "braintrust", "deepeval", "ragas", "openai-evals"],
+        "paths": ["prompts/", "evals/", "eval/"]
+      },
+      "load": [
+        "DOMAINS/prompt_engineering.md",
+        "DOMAINS/ai_evaluation.md"
+      ],
+      "notes": "Catches prompt/eval work that doesn't otherwise trip ai_agents or rag_retrieval's signals — e.g. a standalone prompt library or a benchmark harness like this repo's own benchmarks/."
     },
     {
       "id": "fullstack_platform",
@@ -190,6 +208,11 @@
       "project": "a fullstack platform's first production launch",
       "routes": ["fullstack_platform", "deploy_release"],
       "effective_load": "fullstack_architecture.md governs the code; deployment_and_audit.md governs how the diff ships; production_readiness.md's PROD-17 first-launch gate requires every pillar PASS or an owned FLAG before the launch itself, on top of both"
+    },
+    {
+      "project": "a standalone eval harness benchmarking prompt changes across models",
+      "routes": ["ai_prompting_evals"],
+      "effective_load": "prompt_engineering.md governs the prompts under test; ai_evaluation.md governs the harness itself — cross-model blind judging, mechanical/subjective tracks kept separate, sample-size honesty, disclosed scorer limitations rather than retroactive patches"
     }
   ]
 }

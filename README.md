@@ -8,7 +8,7 @@ A model-agnostic instruction layer that makes coding agents behave like institut
 
 [![Validate](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml/badge.svg)](https://github.com/Aditya-7117/AEQ-OS/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Rule IDs](https://img.shields.io/badge/rule--IDs-419-blue)](docs/ARCHITECTURE.md#rule-index)
+[![Rule IDs](https://img.shields.io/badge/rule--IDs-451-blue)](docs/ARCHITECTURE.md#rule-index)
 [![Model agnostic](https://img.shields.io/badge/models-Claude%20%7C%20Antigravity%20%7C%20Cursor%20%7C%20Windsurf%20%7C%20Copilot%20%7C%20any-informational)](#installation)
 
 </div>
@@ -23,7 +23,7 @@ AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, writte
 
 ## Features
 
-- **419 rules across 22 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`, `SEC-4`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
+- **451 rules across 24 files**, every one with a stable ID (`QT-STOP-3`, `LIVE-9`, `CONST-11`, `SEC-4`) — citable in code review, commit messages, and audits, resolvable anywhere with one `grep`. Counted and contiguity-checked by [`scripts/validate.py`](scripts/validate.py), not hand-tallied.
 - **Automatic routing.** `ROUTER_MAP.json` classifies a project by keyword/dependency/path signals and loads only the relevant domain files — with a hard override that force-loads the live-trading gate the instant real capital is reachable, no matter what else matched.
 - **A real quality gate, not a suggestion.** `CORE/verification_protocol.md` defines G0–G4: enumerated acceptance criteria → zero-warning static pass → failure-path/property tests → captured runtime evidence → a self-audit with a mutation spot-check. "Done" requires an evidence table, not a claim. `DOMAINS/production_readiness.md` adds a scored pre-launch audit on top for anything shipping to production.
 - **A named registry of LLM failure modes** (`CORE/model_adaptation.md`) — placeholder elision, premature completion, hallucinated APIs, scope shrink, confidence inflation, sycophantic agreement, test-gaming — each bound to a specific, mechanical countermeasure, plus a banned-lexicon list a script actually checks.
@@ -31,6 +31,7 @@ AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, writte
 - **A prompt-abstraction layer, without a daemon.** `CORE/intent_resolution.md` has the agent classify intent, assemble context, and surface assumptions before acting — so a terse request gets treated the way a fully-specified one would, with no engineered prompting required and no wire-level middleware doing it behind your back.
 - **Portable, tiered memory.** `CORE/memory_governance.md` defines a four-tier (working/episodic/semantic/procedural) memory model on plain files any tool can read — with an explicit staleness rule: a recalled fact about a specific file or config is verified before it's acted on, never assumed current.
 - **A Mistake Learning Engine.** `CORE/learning_engine.md` gives every gate failure and user correction a structured record — root cause, not just the fix — and promotes a mistake recurring twice into a new or tightened rule, so the rulebook itself gets sharper with use.
+- **Prompts and evals as first-class disciplines.** `DOMAINS/prompt_engineering.md` treats prompts as versioned, regression-tested artifacts, not string literals; `DOMAINS/ai_evaluation.md` governs how AI features get evaluated before and after shipping — golden datasets, cross-model blind judging, and a hard rule against silently discarding or re-running an unflattering result. Both were written from real experience building this repo's own benchmark suite, not in the abstract.
 - **Model- and tool-agnostic.** One boot file, wired into whichever agent you're using via a single global pointer or a project-root file — Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, or anything that reads `AGENTS.md`. No plugin, no daemon, no background process required (an opt-in, free, local-only Performance tier for faster memory/security tooling exists for anyone who wants it — see below).
 - **Self-validating.** `scripts/validate.py` checks its own JSON, its own rule-ID contiguity, and its own banned-lexicon list in CI on every PR — the repo holds itself to the standard it sets for the code it governs.
 
@@ -158,7 +159,9 @@ AEQ-OS/
 │   ├── fullstack_architecture.md    FS-1..20 — migrations, state boundaries, contracts
 │   ├── ui_ux_design_system.md       UIUX-1..20 — institutional design tokens, live rendering
 │   ├── deployment_and_audit.md      DEP-1..20 — zero-downtime deploys, drift, merge gates
-│   └── production_readiness.md      PROD-1..18 — pre-launch institutional-grade audit, scored PASS/FLAG/BLOCK
+│   ├── production_readiness.md      PROD-1..18 — pre-launch institutional-grade audit, scored PASS/FLAG/BLOCK
+│   ├── prompt_engineering.md        PROMPT-1..16 — prompts as versioned artifacts, regression testing, injection safety
+│   └── ai_evaluation.md             EVAL-1..16 — golden datasets, judged scoring, honest disclosure
 ├── scripts/
 │   ├── validate.py                  CI self-check: JSON validity, rule-ID contiguity, lexicon
 │   ├── status.sh                    on-demand wiring report: global + project-root pointers, validator result, Performance-tier state

@@ -31,15 +31,16 @@ flowchart TD
 
     Classify -->|"backtest, alpha, vectorbt..."| R1["quant_research_backtest\n(+ exhaustive_research.md)"]
     Classify -->|"live trading, ccxt, oms..."| R2["quant_live_execution"]
-    Classify -->|"agent, langgraph, orchestration..."| R3["ai_agents"]
+    Classify -->|"agent, langgraph, orchestration..."| R3["ai_agents\n(+ prompt_engineering.md + ai_evaluation.md)"]
     Classify -->|"gymnasium, reward, rollout..."| R4["rl_training"]
-    Classify -->|"rag, qdrant, embedding..."| R5["rag_retrieval"]
+    Classify -->|"rag, qdrant, embedding..."| R5["rag_retrieval\n(+ prompt_engineering.md + ai_evaluation.md)"]
     Classify -->|"api, fastapi, migrations..."| R6["fullstack_platform"]
     Classify -->|"react, dashboard, tailwind..."| R7["ui_frontend"]
     Classify -->|"terraform, k8s, ci/cd..."| R8["deploy_release\n(+ production_readiness.md)"]
+    Classify -->|"prompt template, eval, golden dataset..."| R10["ai_prompting_evals"]
     Classify -->|"none match"| R9["generic_software\n(CORE only)"]
 
-    R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 --> Union["Union of every matched\nroute's load[] files"]
+    R1 & R2 & R3 & R4 & R5 & R6 & R7 & R8 & R10 --> Union["Union of every matched\nroute's load[] files"]
     R9 --> Union
 
     Union --> HardCheck{"Real funds or live venue\nkeys reachable?"}
@@ -110,6 +111,8 @@ flowchart BT
 | `DOMAINS/ui_ux_design_system.md` | `UIUX-n` | Institutional design tokens, data-density layout, low-latency live-data rendering |
 | `DOMAINS/deployment_and_audit.md` | `DEP-n` | Zero-downtime deploy discipline, drift tracking, pre-merge deadlock/SPOF inspection |
 | `DOMAINS/production_readiness.md` | `PROD-n` | Pre-launch institutional-grade audit — architecture/scalability, API security, observability, error handling, performance, backups, attack surface, compliance — scored PASS/FLAG/BLOCK, distinct from DEP's release mechanics |
+| `DOMAINS/prompt_engineering.md` | `PROMPT-n` | Prompts as versioned artifacts, regression/A-B testing, few-shot curation, template injection safety, context-window budget, structured-output validation |
+| `DOMAINS/ai_evaluation.md` | `EVAL-n` | Golden-dataset discipline, mechanical-vs-judged scoring kept separate, cross-model blind judging, honest disclosure of surprising results and scorer limitations, eval-regression gating |
 
 ## Rule index
 
@@ -146,7 +149,9 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 | `UIUX` | 20 | `DOMAINS/ui_ux_design_system.md` |
 | `DEP` | 20 | `DOMAINS/deployment_and_audit.md` |
 | `PROD` | 18 | `DOMAINS/production_readiness.md` |
-| **Total** | **419** | |
+| `PROMPT` | 16 | `DOMAINS/prompt_engineering.md` |
+| `EVAL` | 16 | `DOMAINS/ai_evaluation.md` |
+| **Total** | **451** | |
 
 Resolve any rule ID from anywhere:
 

@@ -1,6 +1,6 @@
 # AEQ-OS — Boot Loader
 
-Version 1.6.1 · Model-agnostic (Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, GPT, local/open-source models, any AGENTS.md-reading tool)
+Version 1.7.0 · Model-agnostic (Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, GPT, local/open-source models, any AGENTS.md-reading tool)
 
 This file is a **boot image for coding agents**, not documentation for humans — for the human-facing overview, see [README.md](README.md). Any agent working on a project on this machine executes the boot protocol below before its first edit of a session.
 
@@ -22,7 +22,7 @@ This file is a **boot image for coding agents**, not documentation for humans �
 
 ## Rule IDs
 
-Every rule has a stable, greppable ID: `CONST-n`, `SEC-n`, `META-n`, `INT-n`, `MEM-n`, `LEARN-n`, `STACK-n`, `VER-n`, `QT-<AREA>-n`, `LIVE-n`, `RESEARCH-n`, `PORT-n`, `DATA-n`, `COMP-n`, `MDL-n`, `AGT-n`, `RAG-n`, `LGR-n`, `FS-n`, `UIUX-n`, `DEP-n`, `PROD-n`. Cite IDs in code review, commit messages, SDRs, and audit output. Resolve any citation with:
+Every rule has a stable, greppable ID: `CONST-n`, `SEC-n`, `META-n`, `INT-n`, `MEM-n`, `LEARN-n`, `STACK-n`, `VER-n`, `QT-<AREA>-n`, `LIVE-n`, `RESEARCH-n`, `PORT-n`, `DATA-n`, `COMP-n`, `MDL-n`, `AGT-n`, `RAG-n`, `LGR-n`, `FS-n`, `UIUX-n`, `DEP-n`, `PROD-n`, `PROMPT-n`, `EVAL-n`. Cite IDs in code review, commit messages, SDRs, and audit output. Resolve any citation with:
 
     grep -rn "QT-STOP" ~/.ai_os/
 
@@ -57,7 +57,9 @@ IDs are append-only: retired IDs are never reused, rules are never renumbered.
         ├── fullstack_architecture.md    ← migrations, state boundaries, contract safety
         ├── ui_ux_design_system.md       ← matte-black tokens, density, live-render perf
         ├── deployment_and_audit.md      ← zero-downtime deploys, drift, merge inspection
-        └── production_readiness.md      ← prototype-to-institutional-grade pre-launch audit
+        ├── production_readiness.md      ← prototype-to-institutional-grade pre-launch audit
+        ├── prompt_engineering.md        ← prompts as versioned artifacts, regression testing, injection safety
+        └── ai_evaluation.md             ← golden datasets, judged scoring, honest disclosure
 
 ## Wiring into an agent tool (one-time, per machine)
 

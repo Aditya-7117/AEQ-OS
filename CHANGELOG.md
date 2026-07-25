@@ -2,6 +2,15 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.7.0] — 2026-07-25
+
+### Added
+- `CORE/model_adaptation.md` — `META-17`, checkpoint-commit discipline: a long, deep, single-prompt session proceeding for many steps with no local commit leaves no recovery point if a later step destroys earlier high-value work. Countermeasure: commit at every meaningfully unlocked milestone, not only at natural end points. Promoted from a real, lived failure mode per `LEARN-7`'s pattern-promotion rule.
+- `DOMAINS/prompt_engineering.md` (`PROMPT-1..16`) — prompts as versioned, regression-tested artifacts: change/versioning discipline extending `AGT-7`, A/B comparison before shipping a system-prompt change, few-shot curation and drift auditing, template construction and injection safety extending `SEC-13`, context-window budget distinct from `AGT-1`'s dollar budget, structured-output schema validation extending `AGT-12`, and a rule against internal rule-ID jargon leaking into user-facing prose — the last one written directly from an instance of exactly that happening in this project's own benchmark run.
+- `DOMAINS/ai_evaluation.md` (`EVAL-1..16`) — golden-dataset discipline, mechanical-vs-judged scoring kept in permanently separate tracks, cross-model blind judging to avoid self-preference and halo-effect bias, sample-size honesty, and — the rule this domain exists to enforce on itself — a surprising or unflattering eval result gets investigated and disclosed with evidence, never silently discarded, re-run until favorable, or fixed retroactively to make an inconvenient number disappear. Distilled directly from building this repo's own `benchmarks/` suite, not written in the abstract.
+- Both new domains wired into `ROUTER_MAP.json`: added to `ai_agents` and `rag_retrieval` routes' `load` lists, plus a new `ai_prompting_evals` route (signals: prompt/eval keywords and tooling) for standalone prompt-library or eval-harness projects that don't otherwise trip agent/RAG signals.
+- Total: **451 rules across 24 files**, verified by `scripts/validate.py`.
+
 ## [1.6.1] — 2026-07-25
 
 ### Fixed / Added
