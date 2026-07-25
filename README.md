@@ -31,7 +31,7 @@ AEQ-OS is not a linter and not a framework. It's a **portable rulebook**, writte
 - **A prompt-abstraction layer, without a daemon.** `CORE/intent_resolution.md` has the agent classify intent, assemble context, and surface assumptions before acting — so a terse request gets treated the way a fully-specified one would, with no engineered prompting required and no wire-level middleware doing it behind your back.
 - **Portable, tiered memory.** `CORE/memory_governance.md` defines a four-tier (working/episodic/semantic/procedural) memory model on plain files any tool can read — with an explicit staleness rule: a recalled fact about a specific file or config is verified before it's acted on, never assumed current.
 - **A Mistake Learning Engine.** `CORE/learning_engine.md` gives every gate failure and user correction a structured record — root cause, not just the fix — and promotes a mistake recurring twice into a new or tightened rule, so the rulebook itself gets sharper with use.
-- **Model- and tool-agnostic.** One boot file, wired into whichever agent you're using via a single global pointer or a project-root file — Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, or anything that reads `AGENTS.md`. No plugin, no daemon, no background process required (an opt-in, free, local-only Performance tier for faster memory/security tooling is on the roadmap — see below).
+- **Model- and tool-agnostic.** One boot file, wired into whichever agent you're using via a single global pointer or a project-root file — Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, or anything that reads `AGENTS.md`. No plugin, no daemon, no background process required (an opt-in, free, local-only Performance tier for faster memory/security tooling exists for anyone who wants it — see below).
 - **Self-validating.** `scripts/validate.py` checks its own JSON, its own rule-ID contiguity, and its own banned-lexicon list in CI on every PR — the repo holds itself to the standard it sets for the code it governs.
 
 ## Architecture
@@ -115,6 +115,20 @@ scripts/status.sh   # full wiring report: global pointers, project-root pointers
 
 Then just work. On your next session, tell your agent what you're building — a live execution engine, a RAG pipeline, a trading dashboard — and it classifies the project and loads the matching rules on its own.
 
+## Performance tier (opt-in)
+
+The Lite tier above — agent-driven grep/read, on-demand checklists — is the default and is never deprecated. `scripts/perf/` adds real, opt-in local tooling for anyone who wants faster recall or scripted checks, closing `MEM-15`/`SEC-18`/`PROD-18`'s tier-awareness rules:
+
+```bash
+scripts/perf/memory_index.py build              # SQLite FTS5 index of .ai_os/memory/, zero dependencies
+scripts/perf/memory_index.py search "query" --semantic   # auto-upgrades to local-embedding search if Ollama has one pulled
+scripts/perf/security_scan.py                   # orchestrates whatever free scanners are already installed (bandit, npm audit, cargo-audit, gosec)
+scripts/perf/readiness_check.py                 # mechanical subset of production_readiness.md's PROD-n checklist
+scripts/perf/install_watcher.sh <project>        # generates a launchd/systemd unit for continuous reindexing — prints the activation command, never registers it for you
+```
+
+No paid APIs, no subscriptions, ever. An install (like a local Ollama embedding model) is fine because it's free, open-source, and something you explicitly opt into — never silent, never required. See [`scripts/perf/README.md`](scripts/perf/README.md) for full details.
+
 ## Folder structure
 
 ```
@@ -147,8 +161,14 @@ AEQ-OS/
 │   └── production_readiness.md      PROD-1..18 — pre-launch institutional-grade audit, scored PASS/FLAG/BLOCK
 ├── scripts/
 │   ├── validate.py                  CI self-check: JSON validity, rule-ID contiguity, lexicon
-│   ├── status.sh                    on-demand wiring report: global + project-root pointers, validator result
-│   └── adopt-project.sh             stamps a project with an AGENTS.md pointer, one command, non-destructive
+│   ├── status.sh                    on-demand wiring report: global + project-root pointers, validator result, Performance-tier state
+│   ├── adopt-project.sh             stamps a project with an AGENTS.md pointer, one command, non-destructive
+│   └── perf/                        opt-in Performance tier — see scripts/perf/README.md
+│       ├── memory_index.py          SQLite FTS5 memory search, auto-upgrading to local-embedding semantic search
+│       ├── security_scan.py         orchestrates already-installed free scanners (bandit, npm audit, cargo-audit, gosec)
+│       ├── readiness_check.py       mechanical subset of production_readiness.md's PROD-n checklist
+│       ├── watcher.py               bounded, owned polling loop — reindexes memory, periodic security scans
+│       └── install_watcher.sh / uninstall_watcher.sh   generates (never auto-registers) a launchd/systemd unit
 ├── templates/                       drop-in snippets per agent tool
 ├── install.sh / install.ps1         installer (macOS/Linux/Windows)
 └── docs/ARCHITECTURE.md             extended diagrams + design philosophy
@@ -170,7 +190,7 @@ AEQ-OS/
 
 ## Roadmap
 
-- [ ] **Opt-in Performance tier.** A local SQLite-FTS memory index (Python stdlib, zero dependencies) as the default upgrade over agent-driven grep/read, with a further opt-in upgrade to local embeddings (a free, open-source, one-time local install — e.g. Ollama) for smarter recall, plus an opt-in background watcher for continuous security/readiness scanning on high-spec machines. On-demand scripts remain the default for everyone else. No paid APIs or subscriptions, ever — an install is fine as long as it's free and the user explicitly opts in.
+- [x] **Opt-in Performance tier** — shipped in v1.6.0, see [`scripts/perf/`](scripts/perf/) below.
 - [ ] Dedicated `DOMAINS/data_engineering.md` — schema evolution and pipeline invariants beyond what `fullstack_architecture.md` covers for OLTP (distinct from `market_data_quality.md`, which is about market data specifically).
 - [ ] Dedicated `DOMAINS/credential_lifecycle.md` — key rotation automation, vault integration, per-environment isolation at team scale, deeper than `security_baseline.md`'s (`SEC-1`/`SEC-2`) general-purpose baseline.
 - [ ] Reference implementations: a minimal trailing-stop engine and a minimal RAG ingestion pipeline that visibly follow the rule IDs, for onboarding.
@@ -191,7 +211,7 @@ Built against real, hard-won failure modes in agentic coding, quant execution, a
 ## FAQ
 
 **Does this run anything, or slow my agent down?**
-No, not by default. It's plain Markdown and JSON, read into context like any other instruction — no daemon, no process, no network calls in the Lite tier, which is what ships in this repo today. `production_readiness.md`'s `PROD-15` auto-remediation ("automatically fix what's mechanically fixable") still happens because the agent edits files during a normal session, the same way it fixes anything else you ask it to — not because a new always-on enforcement service now exists. A free, fully opt-in Performance tier (local search index, optional background watcher, never a paid API) is on the roadmap for anyone who wants it and has the hardware; it will never be required, and the Lite tier will never be deprecated.
+No, not by default. It's plain Markdown and JSON, read into context like any other instruction — no daemon, no process, no network calls in the Lite tier, which is what ships in this repo today. `production_readiness.md`'s `PROD-15` auto-remediation ("automatically fix what's mechanically fixable") still happens because the agent edits files during a normal session, the same way it fixes anything else you ask it to — not because a new always-on enforcement service now exists. A free, fully opt-in Performance tier (`scripts/perf/` — local search index, optional background watcher, never a paid API) exists for anyone who wants it and has the hardware; it will never be required, and the Lite tier will never be deprecated.
 
 **Is there a dashboard to watch it working?**
 Deliberately not — there's no running process, so a "live" dashboard would be showing you a fake heartbeat, which is exactly the kind of dishonest-status theater `CONST-6` and `META-2` exist to rule out elsewhere in this repo. Instead, run `scripts/status.sh`: an on-demand check of install wiring, per-tool *and* per-project pointers, `validate.py`'s result, and real evidence — a grep of your own project git history for rule-ID citations in commit messages — that the rules are actually showing up in real work, not just installed and forgotten.

@@ -2,6 +2,18 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.6.0] — 2026-07-25
+
+### Added
+- **Opt-in Performance tier** (`scripts/perf/`) — real local tooling closing the tier-awareness rules deferred in v1.5.0 (`MEM-15`, `SEC-18`, `PROD-18`). Free forever, no paid APIs or subscriptions, the Lite tier remains the default and is never deprecated.
+  - `memory_index.py` — SQLite FTS5 memory search (Python stdlib, zero dependencies) with an auto-detected upgrade to local-embedding semantic search if a free/open-source embedding model is already pulled via a locally-running Ollama server. Verified end-to-end against a real local model, not mocked.
+  - `security_scan.py` — orchestrates whatever free scanners (`bandit`/`pip-audit`, `npm audit`, `cargo-audit`, `gosec`) are already installed for the stacks detected in a project; reports missing scanners with their free install command rather than skipping silently or faking a PASS. Verified against a real flagged issue via a disposable venv.
+  - `readiness_check.py` — scripts the mechanical subset of `production_readiness.md`'s `PROD-n` checklist (dependency/CVE audit, unpinned dependencies, missing-timeout heuristic, `:latest` deploy-manifest tags); pillars requiring judgment are reported as REQUIRES REVIEW, never faked as PASS.
+  - `watcher.py` — a bounded, owned polling loop (`CONST-17`) that reindexes memory on change and re-runs the security scan on a longer interval; clean `SIGTERM`/`SIGINT` shutdown verified, no orphaned processes.
+  - `install_watcher.sh` / `uninstall_watcher.sh` — generate (macOS launchd plist / Linux systemd `--user` unit) but deliberately never register the watcher with launchd/systemd themselves; the one activation command is printed for the user to run explicitly. Uninstall refuses to delete a currently-loaded unit out from under the service manager. Verified: valid plist XML, no launchd registration occurs, pre-existing unrelated LaunchAgents on the test machine untouched.
+  - `scripts/status.sh` extended to report each project's Performance-tier config state alongside the existing wiring checks.
+- `ROUTER_MAP.json` version bump to `1.6.0`; `BOOT.md` version header synced. No rule-file changes — `MEM-15`/`SEC-18`/`PROD-18` already specified this exact shape in v1.5.0.
+
 ## [1.5.0] — 2026-07-25
 
 ### Added

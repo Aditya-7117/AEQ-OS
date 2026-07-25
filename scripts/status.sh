@@ -72,6 +72,26 @@ if [ "$FOUND_PROJECT_POINTER" -eq 0 ]; then
 fi
 echo
 
+echo "Performance tier (opt-in — current directory):"
+PERF_CONFIG=".ai_os/performance.json"
+if [ -f "$PERF_CONFIG" ]; then
+  python3 - "$PERF_CONFIG" <<'PYEOF'
+import json, sys
+cfg = json.load(open(sys.argv[1]))
+mem = cfg.get("memory_index", {})
+watcher = cfg.get("watcher", {})
+print(f"  \033[32m✓\033[0m tier: {cfg.get('tier', 'lite')}")
+print(f"  \033[32m✓\033[0m memory index: backend={mem.get('backend')} embeddings={mem.get('embeddings')} last_build={mem.get('last_build')}")
+if watcher.get("enabled"):
+    print("  \033[32m✓\033[0m watcher: enabled (registration with launchd/systemd is a separate manual step — check with launchctl/systemctl directly)")
+else:
+    print("  \033[2m·\033[0m watcher: not enabled (run scripts/perf/install_watcher.sh to opt in)")
+PYEOF
+else
+  info "not opted in here — Lite tier applies. Run 'scripts/perf/memory_index.py build' to opt in (see scripts/perf/README.md)."
+fi
+echo
+
 echo "Rulebook integrity:"
 if python3 "$REPO_DIR/scripts/validate.py" >/tmp/aeq-os-validate.$$  2>&1; then
   ok "scripts/validate.py passed"
