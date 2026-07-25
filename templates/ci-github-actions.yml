@@ -1,0 +1,74 @@
+# AEQ-OS gate — drop this file into <your-project>/.github/workflows/aeqos-gate.yml
+#
+# Turns a mechanical subset of AEQ-OS's rules from "instructs" into
+# "enforces": this runs on every PR against YOUR project, not AEQ-OS's own
+# repo. It checks out AEQ-OS alongside your code and runs the same tools
+# scripts/perf/ already ships, against your project.
+#
+# What it checks (all mechanical, all things a script can actually verify —
+# never a judgment call faked as automated, same honesty boundary
+# readiness_check.py already draws):
+#   1. Banned-lexicon grep (CORE/model_adaptation.md §2) over your diff.
+#   2. scripts/perf/security_scan.py — orchestrates whatever free scanners
+#      (bandit/pip-audit, npm audit, cargo-audit, gosec) apply to your stack.
+#   3. scripts/perf/readiness_check.py — the mechanical subset of
+#      production_readiness.md's PROD-n checklist.
+#
+# A FLAG on either script fails this job. A MISSING scanner is reported,
+# not treated as a failure — install it yourself if you want that stack
+# covered (the job output tells you the exact command).
+
+name: AEQ-OS Gate
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  aeqos-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          path: project
+
+      - name: Checkout AEQ-OS
+        uses: actions/checkout@v4
+        with:
+          repository: Aditya-7117/AEQ-OS
+          path: aeq-os
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Best-effort scanner install (Python stack)
+        run: pip install --quiet bandit pip-audit || true
+
+      - name: Banned-lexicon check (CORE/model_adaptation.md §2)
+        working-directory: project
+        run: |
+          # Known limitation, disclosed per this repo's own EVAL-10: a raw
+          # grep can't distinguish real usage from a string literal inside a
+          # test fixture (e.g. a deliberately-bad snippet a scorer's own
+          # unit test checks against) or a file that legitimately discusses
+          # this list by name (a linter's own config, a style guide). Test
+          # directories are excluded by convention; if your project has
+          # another legitimate reference, exclude that path too.
+          PATTERNS='in a real implementation|simplified for brevity|left as an exercise|you would need to|placeholder|should work|probably works|rest of the code remains|\.\.\. existing code \.\.\.'
+          if grep -rniE "$PATTERNS" --include='*.py' --include='*.ts' --include='*.tsx' --include='*.js' --include='*.jsx' --include='*.go' --include='*.rs' \
+               --exclude-dir=test --exclude-dir=tests --exclude-dir='__tests__' --exclude='*test*' --exclude='*spec*' . ; then
+            echo "::error::Banned-lexicon phrase found — see CORE/model_adaptation.md META section 2"
+            exit 1
+          fi
+          echo "no banned-lexicon phrases found"
+
+      - name: Security scan (scripts/perf/security_scan.py)
+        working-directory: project
+        run: python3 ../aeq-os/scripts/perf/security_scan.py --path .
+
+      - name: Production readiness check (scripts/perf/readiness_check.py)
+        working-directory: project
+        run: python3 ../aeq-os/scripts/perf/readiness_check.py --path .

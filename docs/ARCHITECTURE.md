@@ -136,7 +136,7 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 | `QT-PNL` | 2 | `DOMAINS/quant_trading_engine.md` |
 | `QT-TIME` | 2 | `DOMAINS/quant_trading_engine.md` |
 | `QT-DET` | 3 | `DOMAINS/quant_trading_engine.md` |
-| `LIVE` | 22 | `DOMAINS/live_trading_gate.md` |
+| `LIVE` | 25 | `DOMAINS/live_trading_gate.md` |
 | `RESEARCH` | 21 | `DOMAINS/exhaustive_research.md` |
 | `PORT` | 20 | `DOMAINS/portfolio_risk.md` |
 | `DATA` | 20 | `DOMAINS/market_data_quality.md` |
@@ -151,7 +151,7 @@ Counted and contiguity-checked by `scripts/validate.py` — this table is regene
 | `PROD` | 18 | `DOMAINS/production_readiness.md` |
 | `PROMPT` | 16 | `DOMAINS/prompt_engineering.md` |
 | `EVAL` | 16 | `DOMAINS/ai_evaluation.md` |
-| **Total** | **451** | |
+| **Total** | **454** | |
 
 Resolve any rule ID from anywhere:
 

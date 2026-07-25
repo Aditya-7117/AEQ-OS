@@ -50,3 +50,9 @@ This file overrides all others when real capital is reachable. Every item is bin
 ## 9. Change control
 
 - **LIVE-22** — Any diff touching live strategy, engine, or config: reviewed against this gate, deployed to shadow first, rollback command pre-written. Config diffs are reviewed line by line — silent defaults are the enemy (CONST-6).
+
+## 10. Broker & venue documentation compliance
+
+- **LIVE-23** — Before any task affecting paper or live trading logic (order construction, position sizing, risk limits, rate limits, auth flow), check the project's root directory (and any documented `docs/` subdirectory) for broker/venue documentation — PDFs, API references — and ground the implementation in that material. This extends `CONST-2`'s no-invented-reality standard: for a live venue, "verified via official docs" means *this project's* actual uploaded documentation, not general training knowledge about how exchanges "usually" work, which varies by venue and changes over time.
+- **LIVE-24** — When a needed broker/venue behavior is not covered by the project's local documentation, do not guess or extrapolate from a similar venue. Use a live web-search/browse capability to find the venue's current official documentation, filter out irrelevant or unofficial sources, and proceed only once the specific behavior is confirmed from an authoritative source — the venue's own docs, never a forum post or blog standing in for one.
+- **LIVE-25** — If the needed behavior cannot be confirmed via local docs or a web search, stop and ask the user rather than shipping a guess into paper or live logic. This is `META-15`'s ambiguity discipline made a hard stop for trading-specific behavior rather than an optional check: a wrong assumption about order semantics, fee schedules, or rate limits is not a cosmetic bug — it is exactly the kind of live-trading risk this file exists to have zero tolerance for.
