@@ -185,6 +185,9 @@ def cmd_build(args: argparse.Namespace) -> int:
     lib.ok(f"indexed {len(files)} file(s) under {mem_dir}")
     if embed_model:
         lib.ok(f"semantic search enabled — local Ollama model: {embed_model}")
+    elif args.no_embeddings:
+        lib.info("FTS5 only — embeddings explicitly skipped (--no-embeddings). "
+                  "Run `build` without that flag when you want semantic search.")
     else:
         lib.info("FTS5 only — no local embedding model detected. Not required; "
                   "install one free/open-source (e.g. `ollama pull nomic-embed-text`) "

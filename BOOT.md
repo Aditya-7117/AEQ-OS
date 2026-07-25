@@ -1,6 +1,6 @@
 # AEQ-OS — Boot Loader
 
-Version 1.6.0 · Model-agnostic (Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, GPT, local/open-source models, any AGENTS.md-reading tool)
+Version 1.6.1 · Model-agnostic (Claude Code, Google Antigravity, Cursor, Windsurf, GitHub Copilot, Cline/Roo Code, Aider, GPT, local/open-source models, any AGENTS.md-reading tool)
 
 This file is a **boot image for coding agents**, not documentation for humans — for the human-facing overview, see [README.md](README.md). Any agent working on a project on this machine executes the boot protocol below before its first edit of a session.
 

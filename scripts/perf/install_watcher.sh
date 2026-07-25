@@ -11,13 +11,17 @@
 set -euo pipefail
 
 PERF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT="${1:?usage: install_watcher.sh <project-path> [--interval SECONDS]}"
+PROJECT="${1:?usage: install_watcher.sh <project-path> [--interval SECONDS] [--pause-if-pidfile PATH]... [--pause-if-ollama-model NAME]...}"
 INTERVAL="300"
+PAUSE_PIDFILES=()
+PAUSE_MODELS=()
 
 shift || true
 while [ $# -gt 0 ]; do
   case "$1" in
     --interval) INTERVAL="$2"; shift 2 ;;
+    --pause-if-pidfile) PAUSE_PIDFILES+=("$2"); shift 2 ;;
+    --pause-if-ollama-model) PAUSE_MODELS+=("$2"); shift 2 ;;
     *) echo "unknown argument: $1" >&2; exit 1 ;;
   esac
 done
@@ -32,6 +36,26 @@ if [ ! -f "$WATCHER_PY" ]; then
 fi
 
 PYTHON_BIN="$(command -v python3)"
+
+# Shared extra-arguments builder for both the plist <array> and the systemd
+# ExecStart line, so the two branches can't drift out of sync.
+build_pause_args_xml() {
+  for pf in "${PAUSE_PIDFILES[@]:-}"; do
+    [ -n "$pf" ] && printf '        <string>--pause-if-pidfile</string>\n        <string>%s</string>\n' "$pf"
+  done
+  for m in "${PAUSE_MODELS[@]:-}"; do
+    [ -n "$m" ] && printf '        <string>--pause-if-ollama-model</string>\n        <string>%s</string>\n' "$m"
+  done
+}
+
+build_pause_args_shell() {
+  for pf in "${PAUSE_PIDFILES[@]:-}"; do
+    [ -n "$pf" ] && printf ' --pause-if-pidfile %q' "$pf"
+  done
+  for m in "${PAUSE_MODELS[@]:-}"; do
+    [ -n "$m" ] && printf ' --pause-if-ollama-model %q' "$m"
+  done
+}
 
 flip_config() {
   python3 - "$PROJECT" <<'PYEOF'
@@ -74,6 +98,7 @@ if [ "$OS" = "Darwin" ]; then
         <string>${PROJECT}</string>
         <string>--interval</string>
         <string>${INTERVAL}</string>
+$(build_pause_args_xml)
     </array>
     <key>RunAtLoad</key>
     <true/>
@@ -108,7 +133,7 @@ Description=AEQ-OS Performance-tier watcher for ${PROJECT}
 
 [Service]
 Type=simple
-ExecStart=${PYTHON_BIN} ${WATCHER_PY} --path ${PROJECT} --interval ${INTERVAL}
+ExecStart=${PYTHON_BIN} ${WATCHER_PY} --path ${PROJECT} --interval ${INTERVAL}$(build_pause_args_shell)
 Restart=on-failure
 
 [Install]

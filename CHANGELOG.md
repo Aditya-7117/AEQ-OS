@@ -2,6 +2,13 @@
 
 All notable changes to AEQ-OS are recorded here. Format loosely follows [Keep a Changelog](https://keepachangelog.com/); versioning is manual semver (`MAJOR.MINOR.PATCH`) — bump `MINOR` on new rules/domains, `MAJOR` on any rule renumbering or removal (which `CONTRIBUTING.md` asks contributors to avoid entirely), `PATCH` on wording/doc fixes that change no rule's meaning.
 
+## [1.6.1] — 2026-07-25
+
+### Fixed / Added
+- **RAM-safety fix:** `watcher.py`'s automatic background reindexing now always runs FTS5-only, even for a project with embeddings already configured — it never calls Ollama unattended, so it can't compete for RAM with another local-model workload on the same machine. Embeddings are only ever computed when the user consciously runs `memory_index.py build` themselves. `memory_index.py update`/`build` gained explicit, consistent `--no-embeddings` handling and a corrected log message (no longer implies a failed detection when embeddings were deliberately skipped). Verified directly via SQLite query: a file added while the watcher ran got FTS5-indexed but not embedded, and a prior manual embedding was untouched.
+- **New: configurable pause conditions.** `watcher.py --pause-if-pidfile PATH` and `--pause-if-ollama-model NAME` (both repeatable) make the watcher skip all work for an iteration — no reindex, no security scan — while a named process is alive or a named Ollama model is currently loaded (checked live via `/api/ps`), resuming automatically once neither holds. Generic and empty by default, not tied to any specific app; `install_watcher.sh` now accepts and forwards both flags into the generated launchd plist / systemd unit. Verified against real conditions: a genuinely-dead PID does not pause, a genuinely-alive PID does; a real (already-installed, no new download) Ollama model loaded into memory is correctly detected by matching pattern and correctly ignored by a non-matching one.
+- `ROUTER_MAP.json`/`BOOT.md` version bump to `1.6.1`. No rule-file changes.
+
 ## [1.6.0] — 2026-07-25
 
 ### Added

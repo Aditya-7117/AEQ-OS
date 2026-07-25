@@ -60,8 +60,25 @@ PASS.
 
 ```bash
 scripts/perf/watcher.py --path <project> --interval 300   # run in the foreground
-scripts/perf/install_watcher.sh <project> [--interval SECONDS]   # generate a unit, don't register it
-scripts/perf/uninstall_watcher.sh <project>                      # remove a generated unit
+scripts/perf/install_watcher.sh <project> [--interval SECONDS] \
+  [--pause-if-pidfile PATH]... [--pause-if-ollama-model NAME]...   # generate a unit, don't register it
+scripts/perf/uninstall_watcher.sh <project>                        # remove a generated unit
+```
+
+**Deferring to another RAM-heavy workload:** pass `--pause-if-pidfile` and/or
+`--pause-if-ollama-model` (either flag repeatable) to make the watcher skip
+*all* work for an iteration — no reindex, no scan — whenever a named process
+is alive or a named Ollama model is currently loaded (checked live via
+`/api/ps`, not just "pulled"), resuming automatically once neither holds.
+Empty by default — nothing pauses unless you configure it; this isn't tied
+to any specific app. Example, for a machine also running a separate project
+that loads large local models through the same Ollama server:
+
+```bash
+scripts/perf/install_watcher.sh ~/Projects/my-project \
+  --pause-if-pidfile ~/Projects/other-project/data/server.pid \
+  --pause-if-ollama-model deepseek-r1:32b \
+  --pause-if-ollama-model qwen3:32b
 ```
 
 `watcher.py` is a bounded polling loop with a clean shutdown path (`SIGTERM`/
