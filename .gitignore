@@ -8,3 +8,4 @@ __pycache__/
 *.pyc
 node_modules/
 benchmarks/results/
+.ai_os/
